@@ -6,12 +6,18 @@ import freeice from 'freeice'
 const Base = styled.main`
   background-color: black;
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-areas:
+    'header header header'
+    'remote remote remote'
+    'local controls .';
+  grid-template-rows: 4em 1fr calc(150px + 1em);
+  grid-template-columns: calc(200px + 1em) 1fr calc(200px + 1em);
 `
 const Header = styled.header`
+  grid-area: header;
   background-color: #222;
-  padding: 20px;
+  padding: 0.5em;
   color: white;
   text-align: center;
   small {
@@ -24,14 +30,32 @@ const Header = styled.header`
     color: white;
   }
 `
+const Controls = styled.section`
+  display: grid;
+  grid-gap: 1em;
+  grid-auto-flow: column;
+  align-self: end;
+  justify-self: center;
+  background: aliceblue;
+  padding: 0.75em;
+  margin-bottom: 0.5em;
+  border-radius: 22px;
+  input {
+    position: absolute;
+    opacity: 0;
+  }
+  label {
+    cursor: pointer;
+  }
+`
 const LocalVideo = styled.video`
-  position: absolute;
+  grid-area: local;
   width: 200px;
   height: 150px;
-  bottom: 1em;
-  left: 1em;
+  margin: 0.5em;
 `
 const RemoteVideos = styled.section`
+  grid-area: remote;
   display: flex;
   justify-content: space-around;
   align-items: center;
