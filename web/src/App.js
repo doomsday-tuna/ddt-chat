@@ -3,9 +3,10 @@ import styled from 'styled-components'
 import SimpleWebRTC from 'simplewebrtc'
 import freeice from 'freeice'
 
-import ShareScreen from './icons/ShareScreen'
 import Microphone from './icons/Microphone'
 import Video from './icons/Video'
+import ShareScreen from './icons/ShareScreen'
+import ChangeRoom from './icons/ChangeRoom'
 
 const Base = styled.main`
   background-color: black;
@@ -74,9 +75,20 @@ const RemoteVideos = styled.section`
     max-width: 50vw;
   }
 `
+const PlainButton = styled.button`
+  border: none;
+  background: none;
+  appearance: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+`
+const initialParams = new URLSearchParams(window.location.search)
+const initialRoom = initialParams.get('room') || 'lobby'
 
 class App extends Component {
   state = {
+    room: initialRoom,
     sharingAudio: true,
     sharingVideo: true,
     sharingScreen: false,
@@ -96,7 +108,7 @@ class App extends Component {
       })
     })
     webrtc.on('readyToCall', () => {
-      webrtc.joinRoom('lobby')
+      webrtc.joinRoom(initialRoom)
       this.setState({
         readyToCall: true,
       })
@@ -137,13 +149,35 @@ class App extends Component {
       }
     })
   }
+  handleChangeRoom = () => {
+    let newRoom = window.prompt('What room would you like to join?')
+    if (newRoom == null || newRoom.trim() === '') return
+    this.webrtc.leaveRoom(this.state.room)
+    newRoom = newRoom.trim()
+    this.webrtc.joinRoom(newRoom, err => {
+      if (err) {
+        alert(`Failed to join room: ${err}`)
+        return
+      }
+      this.setState({ room: newRoom })
+      const params = new URLSearchParams(window.location.search)
+      params.set('room', newRoom)
+      window.history.pushState(
+        {
+          room: newRoom,
+        },
+        newRoom,
+        `?${params.toString()}`
+      )
+    })
+  }
   render() {
-    const { readyToCall } = this.state
+    const { room, readyToCall } = this.state
     return (
       <Base>
         <Header>
           <h1>DDT Chat</h1>
-          <small>{readyToCall ? 'Connected' : 'Connecting...'}</small>
+          <small>{readyToCall ? `Connected - ${room}` : 'Connecting...'}</small>
         </Header>
         <LocalVideo id="localVideo" />
         <RemoteVideos id="remotesVideos" />
@@ -193,6 +227,9 @@ class App extends Component {
             }>
             <ShareScreen active={this.state.sharingScreen} />
           </label>
+          <PlainButton onClick={this.handleChangeRoom} title="Change rooms">
+            <ChangeRoom />
+          </PlainButton>
         </Controls>
       </Base>
     )
