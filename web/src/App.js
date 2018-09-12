@@ -3,6 +3,10 @@ import styled from 'styled-components'
 import SimpleWebRTC from 'simplewebrtc'
 import freeice from 'freeice'
 
+import ShareScreen from './icons/ShareScreen'
+import Microphone from './icons/Microphone'
+import Video from './icons/Video'
+
 const Base = styled.main`
   background-color: black;
   height: 100%;
@@ -73,6 +77,8 @@ const RemoteVideos = styled.section`
 
 class App extends Component {
   state = {
+    sharingAudio: true,
+    sharingVideo: true,
     sharingScreen: false,
   }
   componentDidMount() {
@@ -96,9 +102,28 @@ class App extends Component {
       })
     })
   }
+  handleChangeShareAudio = ({ target }) => {
+    const sharingAudio = target.checked
+    this.setState({ sharingAudio })
+    if (sharingAudio) {
+      this.webrtc.unmute()
+    } else {
+      this.webrtc.mute()
+    }
+  }
+  handleChangeShareVideo = ({ target }) => {
+    const sharingVideo = target.checked
+    this.setState({ sharingVideo })
+    if (sharingVideo) {
+      this.webrtc.resumeVideo()
+    } else {
+      this.webrtc.pauseVideo()
+    }
+  }
   handleChangeShareScreen = ({ target }) => {
-    this.setState({ sharingScreen: target.checked })
-    if (!target.checked) {
+    const sharingScreen = target.checked
+    this.setState({ sharingScreen })
+    if (!sharingScreen) {
       this.webrtc.stopScreenShare()
       return
     }
@@ -119,17 +144,56 @@ class App extends Component {
         <Header>
           <h1>DDT Chat</h1>
           <small>{readyToCall ? 'Connected' : 'Connecting...'}</small>
-          <label>
-            Share screen
-            <input
-              type="checkbox"
-              onChange={this.handleChangeShareScreen}
-              checked={this.state.sharingScreen}
-            />
-          </label>
         </Header>
         <LocalVideo id="localVideo" />
         <RemoteVideos id="remotesVideos" />
+        <Controls>
+          <input
+            id="share-audio"
+            type="checkbox"
+            onChange={this.handleChangeShareAudio}
+            checked={this.state.sharingAudio}
+          />
+          <label
+            htmlFor="share-audio"
+            title={
+              this.state.sharingAudio
+                ? 'Stop sharing audio'
+                : 'Start sharing audio'
+            }>
+            <Microphone active={this.state.sharingAudio} />
+          </label>
+          <input
+            id="share-video"
+            type="checkbox"
+            onChange={this.handleChangeShareVideo}
+            checked={this.state.sharingVideo}
+          />
+          <label
+            htmlFor="share-video"
+            title={
+              this.state.sharingAudio
+                ? 'Stop sharing video'
+                : 'Start sharing video'
+            }>
+            <Video active={this.state.sharingVideo} />
+          </label>
+          <input
+            id="share-screen"
+            type="checkbox"
+            onChange={this.handleChangeShareScreen}
+            checked={this.state.sharingScreen}
+          />
+          <label
+            htmlFor="share-screen"
+            title={
+              this.state.sharingAudio
+                ? 'Stop sharing your screen'
+                : 'Start sharing your screen'
+            }>
+            <ShareScreen active={this.state.sharingScreen} />
+          </label>
+        </Controls>
       </Base>
     )
   }
