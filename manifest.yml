@@ -1,0 +1,123 @@
+---
+  apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    name: chat-doomsdaytuna-io-web
+  spec:
+    replicas: 1
+    template:
+      metadata:
+        labels:
+          app: chat-doomsdaytuna-io-web
+      spec:
+        containers:
+          - name: web
+            image: gcr.io/doomsdaytuna-1470749755823/chat-doomsdaytuna-io-web
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 80
+                protocol: TCP
+            resources:
+              requests:
+                cpu: 1m
+                memory: 20Mi
+---
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: chat-doomsdaytuna-io-web
+  spec:
+    selector:
+      app: chat-doomsdaytuna-io-web
+    ports:
+      - protocol: TCP
+        port: 80
+        targetPort: 80
+---
+  apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    name: chat-doomsdaytuna-io-api
+  spec:
+    replicas: 1
+    template:
+      metadata:
+        labels:
+          app: chat-doomsdaytuna-io-api
+      spec:
+        containers:
+          - name: api
+            image: gcr.io/doomsdaytuna-1470749755823/chat-doomsdaytuna-io-api
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 80
+                protocol: TCP
+            resources:
+              requests:
+                cpu: 1m
+                memory: 70Mi
+            env:
+              - name: NODE_ENV
+                value: production
+              - name: JWT_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    name: chat-doomsdaytuna-io
+                    key: jwt-secret
+        #   - name: turnserver
+        #     image: steppechange/docker-coturn
+        #     imagePullPolicy: IfNotPresent
+        #     ports:
+        #       - containerPort: 80
+        #         protocol: TCP
+        #     volumeMounts:
+        #       - name: turnserver-config
+        #         mountPath: "/etc/turnserver"
+        #         readOnly: true
+        # volumes:
+        #   - name: turnserver-config
+        #     secret:
+        #       secretName: chat-doomsdaytuna-io
+        #       items:
+        #       - key: turnserver-config
+        #         path: turnserver.conf         
+---
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: chat-doomsdaytuna-io-api
+  spec:
+    selector:
+      app: chat-doomsdaytuna-io-api
+    ports:
+      - protocol: TCP
+        port: 80
+        targetPort: 80
+---
+  apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata:
+    name: chat-doomsdaytuna-io
+    annotations:
+      kubernetes.io/tls-acme: "true"
+  spec:
+    tls:
+      - secretName: chat.doomsdaytuna.io-tls
+        hosts:
+        - chat.doomsdaytuna.io
+    rules:
+      - host: chat.doomsdaytuna.io
+        http:
+          paths:
+          - path: /
+            backend:
+              serviceName: chat-doomsdaytuna-io-web
+              servicePort: 80
+          - path: /api
+            backend:
+              serviceName: chat-doomsdaytuna-io-api
+              servicePort: 80
+          - path: /socket.io
+            backend:
+              serviceName: chat-doomsdaytuna-io-api
+              servicePort: 80

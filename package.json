@@ -1,0 +1,13 @@
+{
+  "name": "ddt-chat",
+  "version": "0.0.1",
+  "description": "Cross-platform chat app.",
+  "main": "index.js",
+  "scripts": {
+    "build": "cd web && npm run build && cd ../api && npm run build",
+    "publish": "npm run build && cd web && npm run publish && cd ../api && npm run publish",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
