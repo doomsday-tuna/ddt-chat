@@ -1,0 +1,20 @@
+{
+  "name": "api",
+  "version": "1.0.9",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "PORT=8888 node --experimental-modules --inspect src/main.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "docker build -t gcr.io/doomsdaytuna-1470749755823/chat-doomsdaytuna-io-api:$npm_package_version -t gcr.io/doomsdaytuna-1470749755823/chat-doomsdaytuna-io-api:latest .",
+    "prepublish": "docker push gcr.io/doomsdaytuna-1470749755823/chat-doomsdaytuna-io-api:$npm_package_version && docker push gcr.io/doomsdaytuna-1470749755823/chat-doomsdaytuna-io-api:latest",
+    "publish": "kubectl set image deployment/chat-doomsdaytuna-io-api api=gcr.io/doomsdaytuna-1470749755823/chat-doomsdaytuna-io-api:$npm_package_version"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-uuid": "^1.4.8",
+    "socket.io": "^1.3.7"
+  }
+}
