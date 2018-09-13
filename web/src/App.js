@@ -175,6 +175,7 @@ class App extends Component {
   }
   render() {
     const { room, readyToCall } = this.state
+    const { supportScreenSharing } = this.webrtc.capabilities
     return (
       <Base>
         <Header>
@@ -219,15 +220,21 @@ class App extends Component {
             type="checkbox"
             onChange={this.handleChangeShareScreen}
             checked={this.state.sharingScreen}
+            disabled={!supportScreenSharing}
           />
           <label
             htmlFor="share-screen"
             title={
-              this.state.sharingAudio
-                ? 'Stop sharing your screen'
-                : 'Start sharing your screen'
+              !supportScreenSharing
+                ? 'Screen sharing not available.'
+                : this.state.sharingScreen
+                  ? 'Stop sharing your screen'
+                  : 'Start sharing your screen'
             }>
-            <ShareScreen active={this.state.sharingScreen} />
+            <ShareScreen
+              active={this.state.sharingScreen}
+              disabled={!supportScreenSharing}
+            />
           </label>
           <PlainButton onClick={this.handleChangeRoom} title="Change rooms">
             <ChangeRoom />

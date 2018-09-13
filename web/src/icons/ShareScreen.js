@@ -1,10 +1,10 @@
 import React from 'react'
 
-export default ({ active }) => (
+export default ({ disabled, active }) => (
   <svg
     height="30px"
     width="32px"
-    fill={active ? 'aqua' : 'black'}
+    fill={disabled ? 'grey' : active ? 'aqua' : 'black'}
     x="0px"
     y="0px"
     viewBox="0 0 32 32">
