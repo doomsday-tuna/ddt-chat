@@ -61,6 +61,8 @@ const LocalVideo = styled.video`
   width: 200px;
   height: 150px;
   margin: 0.5em;
+  object-fit: contain;
+  object-position: left;
 `
 const RemoteVideos = styled.section`
   grid-area: remote;
