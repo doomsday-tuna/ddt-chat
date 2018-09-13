@@ -22,5 +22,11 @@
     "prepublish": "docker push gcr.io/doomsdaytuna-1470749755823/chat-doomsdaytuna-io-web:latest && docker push gcr.io/doomsdaytuna-1470749755823/chat-doomsdaytuna-io-web:$npm_package_version",
     "publish": "kubectl set image deployment/chat-doomsdaytuna-io-web web=gcr.io/doomsdaytuna-1470749755823/chat-doomsdaytuna-io-web:$npm_package_version",
     "push": "npm run build && npm run publish"
+  },
+  "proxy": {
+    "/socket.io": {
+      "target": "ws://localhost:8888",
+      "ws": true
+    }
   }
 }

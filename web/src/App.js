@@ -98,27 +98,24 @@ class App extends Component {
     sharingVideo: true,
     sharingScreen: false,
   }
-  componentDidMount() {
-    const webrtc = (this.webrtc = new SimpleWebRTC({
-      localVideoEl: 'localVideo',
-      remoteVideosEl: 'remotesVideos',
-      autoRequestMedia: true,
-      url:
-        process.env.NODE_ENV === 'production' ? '/' : 'http://localhost:8888',
-      peerConnectionConfig: freeice(),
-    }))
-    webrtc.on('connectionReady', id => {
+  webrtc = new SimpleWebRTC({
+    localVideoEl: 'localVideo',
+    remoteVideosEl: 'remotesVideos',
+    autoRequestMedia: true,
+    url: window.location.origin,
+    peerConnectionConfig: freeice(),
+  })
+    .on('connectionReady', id => {
       this.setState({
         connectionId: id,
       })
     })
-    webrtc.on('readyToCall', () => {
-      webrtc.joinRoom(initialRoom)
+    .on('readyToCall', () => {
+      this.webrtc.joinRoom(initialRoom)
       this.setState({
         readyToCall: true,
       })
     })
-  }
   handleChangeShareAudio = ({ target }) => {
     const sharingAudio = target.checked
     this.setState({ sharingAudio })
