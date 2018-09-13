@@ -15,9 +15,10 @@ const Base = styled.main`
   grid-template-areas:
     'header header'
     'remote remote'
-    'local .';
-  grid-template-rows: 4em 1fr calc(150px + 1em);
+    'local remote-end';
+  grid-template-rows: 4em calc(100vh - 150px - 5em) calc(150px + 1em);
   grid-template-columns: calc(200px + 1em) 1fr;
+  overflow: hidden;
 `
 const Header = styled.header`
   grid-area: header;
@@ -55,6 +56,9 @@ const Controls = styled.section`
   label {
     cursor: pointer;
   }
+  input[disabled] + label {
+    cursor: not-allowed;
+  }
 `
 const LocalVideo = styled.video`
   grid-area: local;
@@ -65,19 +69,26 @@ const LocalVideo = styled.video`
   object-position: right;
 `
 const RemoteVideos = styled.section`
-  grid-area: remote;
-  display: flex;
+  grid-row-start: remote;
+  grid-column-start: remote;
+  grid-row-end: remote-end;
+  grid-column-end: remote-end;
+  display: grid;
   justify-content: space-around;
-  align-items: center;
-  flex-grow: 1;
+  align-content: center;
+  grid-gap: 0.5em;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 500px));
+  overflow: hidden;
   video {
-    max-width: 100%;
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
   }
   #localScreen {
     position: absolute;
     bottom: 1em;
     right: 1em;
-    max-width: 50vw;
+    max-width: 200px;
   }
 `
 const PlainButton = styled.button`
