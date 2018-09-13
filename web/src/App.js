@@ -13,11 +13,11 @@ const Base = styled.main`
   height: 100%;
   display: grid;
   grid-template-areas:
-    'header header header'
-    'remote remote remote'
-    'local controls .';
+    'header header'
+    'remote remote'
+    'local .';
   grid-template-rows: 4em 1fr calc(150px + 1em);
-  grid-template-columns: calc(200px + 1em) 1fr calc(200px + 1em);
+  grid-template-columns: calc(200px + 1em) 1fr;
 `
 const Header = styled.header`
   grid-area: header;
@@ -36,6 +36,8 @@ const Header = styled.header`
   }
 `
 const Controls = styled.section`
+  grid-column: 1/-1;
+  grid-row: 3;
   display: grid;
   grid-gap: 1em;
   grid-auto-flow: column;
@@ -45,6 +47,7 @@ const Controls = styled.section`
   padding: 0.75em;
   margin-bottom: 0.5em;
   border-radius: 22px;
+  z-index: 1;
   input {
     position: absolute;
     opacity: 0;
