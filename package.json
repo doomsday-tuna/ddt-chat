@@ -1,5 +1,6 @@
 {
   "name": "ddt-chat",
+  "private": true,
   "version": "0.0.1",
   "description": "Cross-platform chat app.",
   "main": "index.js",
